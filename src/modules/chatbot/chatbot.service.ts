@@ -1,14 +1,14 @@
-import { PrismaClient } from '@prisma/client';
-import axios from 'axios';
-import config from '../../shared/config/env';
-import logger from '../../shared/utils/logger.util';
-import { IChatResponse, IChatHistory } from './chatbot.interface';
+import { PrismaClient } from "@prisma/client";
+import axios from "axios";
+import config from "../../shared/config/env";
+import logger from "../../shared/utils/logger.util";
+import { IChatResponse, IChatHistory } from "./chatbot.interface";
 
 const prisma = new PrismaClient();
 
 class ChatbotService {
   private readonly HUGGINGFACE_API =
-    'https://api-inference.huggingface.co/models/google/flan-t5-base';
+    "https://api-inference.huggingface.co/models/google/flan-t5-base";
   private readonly MAX_RETRIES = 2;
   private readonly TIMEOUT = 10000; // 10 seconds
 
@@ -50,7 +50,7 @@ class ChatbotService {
         timestamp: new Date(),
       };
     } catch (error: any) {
-      logger.error('Chatbot error:', error);
+      logger.error("Chatbot error:", error);
 
       // Use fallback response on error
       const fallbackResponse = this.getFallbackResponse(message);
@@ -92,7 +92,7 @@ class ChatbotService {
           {
             headers: {
               Authorization: `Bearer ${config.huggingface.apiKey}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             timeout: this.TIMEOUT,
           }
@@ -126,7 +126,7 @@ class ChatbotService {
   private async getRecentMessages(userId: string, limit: number) {
     return prisma.chatMessage.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit,
       select: {
         message: true,
@@ -139,11 +139,12 @@ class ChatbotService {
    * Build context from recent messages
    */
   private buildContext(recentMessages: any[], currentMessage: string): string {
-    let context = 'You are a helpful e-commerce assistant. Answer customer questions about products, orders, and provide recommendations.\n\n';
+    let context =
+      "You are a helpful e-commerce assistant. Answer customer questions about products, orders, and provide recommendations.\n\n";
 
     if (recentMessages.length > 0) {
       const reversed = [...recentMessages].reverse();
-      context += 'Recent conversation:\n';
+      context += "Recent conversation:\n";
       reversed.forEach((msg) => {
         context += `Customer: ${msg.message}\nAssistant: ${msg.response}\n`;
       });
@@ -158,11 +159,11 @@ class ChatbotService {
    * Clean AI response
    */
   private cleanResponse(response: string, prompt: string): string {
-    let cleaned = response.replace(prompt, '').trim();
+    let cleaned = response.replace(prompt, "").trim();
 
-    cleaned = cleaned.replace(/^Assistant:\s*/i, '');
+    cleaned = cleaned.replace(/^Assistant:\s*/i, "");
 
-    const sentences = cleaned.split('. ').filter(Boolean);
+    const sentences = cleaned.split(". ").filter(Boolean);
 
     if (sentences.length > 1) {
       const last: any = sentences[sentences.length - 1];
@@ -171,7 +172,7 @@ class ChatbotService {
       }
     }
 
-    return sentences.join('. ') + (sentences.length > 1 ? '.' : '');
+    return sentences.join(". ") + (sentences.length > 1 ? "." : "");
   }
 
   /**
@@ -181,57 +182,60 @@ class ChatbotService {
     const lowerMessage = message.toLowerCase();
 
     // Gaming products
-    if (lowerMessage.includes('gaming') || lowerMessage.includes('game')) {
-      return 'Check out our gaming products - Gaming Mouse X500 and Mechanical Keyboards with RGB lighting. They offer fast response times and are highly rated by gamers.';
+    if (lowerMessage.includes("gaming") || lowerMessage.includes("game")) {
+      return "Check out our gaming products - Gaming Mouse X500 and Mechanical Keyboards with RGB lighting. They offer fast response times and are highly rated by gamers.";
     }
 
     // Order tracking
     if (
-      lowerMessage.includes('order') ||
-      lowerMessage.includes('track') ||
-      lowerMessage.includes('delivery')
+      lowerMessage.includes("order") ||
+      lowerMessage.includes("track") ||
+      lowerMessage.includes("delivery")
     ) {
-      return 'You can view your order status in the Orders section. Please provide your order ID for specific order inquiries.';
+      return "You can view your order status in the Orders section. Please provide your order ID for specific order inquiries.";
     }
 
     // Payment
     if (
-      lowerMessage.includes('payment') ||
-      lowerMessage.includes('pay') ||
-      lowerMessage.includes('card')
+      lowerMessage.includes("payment") ||
+      lowerMessage.includes("pay") ||
+      lowerMessage.includes("card")
     ) {
-      return 'We accept payments through Stripe. All payments are secure and processed instantly. You will receive real-time order updates.';
+      return "We accept payments through Stripe. All payments are secure and processed instantly. You will receive real-time order updates.";
     }
 
     // Return/Refund
     if (
-      lowerMessage.includes('return') ||
-      lowerMessage.includes('refund') ||
-      lowerMessage.includes('cancel')
+      lowerMessage.includes("return") ||
+      lowerMessage.includes("refund") ||
+      lowerMessage.includes("cancel")
     ) {
-      return 'We offer a 30-day return policy. To initiate a return, please contact our support team with your order details.';
+      return "We offer a 30-day return policy. To initiate a return, please contact our support team with your order details.";
     }
 
     // Product recommendations
     if (
-      lowerMessage.includes('recommend') ||
-      lowerMessage.includes('suggest') ||
-      lowerMessage.includes('best')
+      lowerMessage.includes("recommend") ||
+      lowerMessage.includes("suggest") ||
+      lowerMessage.includes("best")
     ) {
-      return 'It depends on your specific needs. For gaming, I recommend high-performance peripherals, and for work, ergonomic products are best. Please provide more details for better suggestions.';
+      return "It depends on your specific needs. For gaming, I recommend high-performance peripherals, and for work, ergonomic products are best. Please provide more details for better suggestions.";
     }
 
     // Default response
-    return 'Thank you for your question! I can help with product recommendations, order inquiries, and general questions. Please tell me more details about what you need.';
+    return "Thank you for your question! I can help with product recommendations, order inquiries, and general questions. Please tell me more details about what you need.";
   }
 
   /**
    * Get chat history
    */
-  async getChatHistory(userId: string, limit: number = 10): Promise<IChatHistory> {
+  async getChatHistory(
+    userId: string,
+    limit: number = 10
+  ): Promise<IChatHistory> {
     const messages = await prisma.chatMessage.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: limit,
     });
 
