@@ -62,28 +62,6 @@ cp .env.example .env
 
 Then update the `.env` file with your credentials.
 
-# Server
-NODE_ENV=development
-PORT=5000
-
-# Database
-DATABASE_URL=mongodb+srv://order-x:yh8xBDpKe61xJRES@cluster0.hyv0wnb.mongodb.net/order-x?appName=Cluster0
-
-# JWT
-JWT_SECRET=secret
-JWT_EXPIRES_IN=7d
-
-# Stripe
-STRIPE_SECRET_KEY=sk_test_51OBfrIDITPfpX7OJWEZmGoDSyNxy9B0TFhOmwFq7tRSfPFhjorLcSY2EGS5tBtZDcpGagufd74t4IGjDxJmOhUDu00yiDOru7X
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-
-
-# HuggingFace
-HUGGINGFACE_API_KEY=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
-
-# Frontend URL
-FRONTEND_URL=http://localhost:3000
-
 ### 4. Prisma Setup
 
 ```bash
