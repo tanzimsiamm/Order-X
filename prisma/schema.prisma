@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  orders    Order[]
+  chatMessages ChatMessage[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Order {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  user          User          @relation(fields: [userId], references: [id])
+  
+  items         OrderItem[]
+  totalAmount   Float
+  
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  orderStatus   OrderStatus   @default(PENDING)
+  
+  stripePaymentIntentId String?
+  paypalOrderId         String?
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+type OrderItem {
+  title    String
+  price    Float
+  quantity Int
+}
+
+enum PaymentMethod {
+  STRIPE
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+}
+
+model ChatMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  message   String
+  response  String
+  
+  createdAt DateTime @default(now())
+}
