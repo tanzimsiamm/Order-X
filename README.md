@@ -1,13 +1,12 @@
 # 🛒 Real-Time Order Management System
 
-A complete backend system with authentication, order management, payment integration (Stripe + PayPal), real-time notifications (Socket.io), and AI chatbot.
+A complete backend system with authentication, order management, payment integration (Stripe), real-time notifications (Socket.io), and AI chatbot.
 
 ## ✨ Features
 
 - ✅ **JWT Authentication** - Secure user registration and login
 - ✅ **Order Management** - MongoDB integration with Prisma ORM
 - ✅ **Stripe Payment** - Payment Intent and Webhook
-- ✅ **PayPal Payment** - Complete PayPal integration
 - ✅ **Payment Webhooks** - Secure webhook handling (payment status cannot be updated from frontend)
 - ✅ **Real-time Updates** - Instant notifications with Socket.io
 - ✅ **AI Chatbot** - HuggingFace Free API integration
@@ -26,7 +25,7 @@ A complete backend system with authentication, order management, payment integra
 - **Database:** MongoDB
 - **ORM:** Prisma
 - **Real-time:** Socket.io
-- **Payment:** Stripe + PayPal
+- **Payment:** Stripe
 - **AI:** HuggingFace (google/flan-t5-base)
 - **Authentication:** JWT + bcrypt
 - **Validation:** Zod
@@ -36,7 +35,6 @@ A complete backend system with authentication, order management, payment integra
 - Node.js 18+
 - MongoDB (local or cloud)
 - Stripe Account
-- PayPal Developer Account
 - HuggingFace API Key (free)
 
 ## 🚀 Installation & Setup
@@ -204,21 +202,6 @@ Response (Stripe):
 }
 ```
 
-Response (PayPal):
-```json
-{
-  "success": true,
-  "message": "Order created successfully",
-  "data": {
-    "order": {...},
-    "payment": {
-      "paypalOrderId": "xxx",
-      "approvalUrl": "https://www.sandbox.paypal.com/..."
-    }
-  }
-}
-```
-
 #### Get User Orders
 ```http
 GET /orders
@@ -240,14 +223,6 @@ stripe-signature: <signature>
 Content-Type: application/json
 
 [Stripe webhook payload]
-```
-
-#### PayPal Webhook
-```http
-POST /payment/webhook/paypal
-Content-Type: application/json
-
-[PayPal webhook payload]
 ```
 
 ### AI Chatbot
@@ -388,7 +363,6 @@ docker-compose down
 - Payment status is updated **only from webhooks**
 - Payment status from frontend is never trusted
 - Stripe webhook signature is verified
-- PayPal webhook validation is performed
 
 ### Real-time Updates
 - Socket.io connection is established as soon as user logs in
@@ -425,11 +399,6 @@ npx prisma db push --force-reset
 - Test locally with Stripe CLI
 - Add webhook endpoint from Stripe Dashboard in production
 
-**PayPal:**
-- Test locally with ngrok
-- Check if PayPal sandbox mode is enabled
-- Verify webhook URL is correctly configured
-
 ### HuggingFace API Errors
 
 - Check if API key is valid
@@ -452,11 +421,10 @@ npx prisma db push --force-reset
 - userId (relation)
 - items (array)
 - totalAmount
-- paymentMethod (STRIPE | PAYPAL)
+- paymentMethod STRIPE
 - paymentStatus (PENDING | PAID | FAILED)
 - orderStatus (PENDING | PROCESSING | SHIPPED | DELIVERED)
 - stripePaymentIntentId
-- paypalOrderId
 
 ### ChatMessage
 - id (ObjectId)
@@ -470,9 +438,7 @@ npx prisma db push --force-reset
 - [ ] User registration works
 - [ ] User login returns JWT token
 - [ ] Create order with Stripe
-- [ ] Create order with PayPal
 - [ ] Stripe webhook updates payment status
-- [ ] PayPal webhook updates payment status
 - [ ] Socket.io sends real-time notifications
 - [ ] AI chatbot responds correctly
 - [ ] Admin can update order status
@@ -515,8 +481,8 @@ This project is licensed under the MIT License.
 
 Made with ❤️ by Tanjim Siddiki Siyam
 
-**Live Demo:** [Your Deployed URL]
+**Live Demo:** https://order-management-system-3eai.onrender.com
 
-**GitHub:** [Your GitHub URL]
+**GitHub:** https://github.com/tanzimsiamm/Order-X
 
 **Contact:** tanjim.siyam.tech@gmail.com
