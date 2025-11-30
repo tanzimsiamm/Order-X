@@ -8,7 +8,7 @@ import { IJwtPayload } from '../interfaces/common.interface';
 export const generateToken = (
   payload: Omit<IJwtPayload, 'iat' | 'exp'>
 ): string => {
-  return jwt.sign(payload, config.jwt.secret, {
+  return jwt.sign(payload, config.jwt.secret as string, {
     expiresIn: config.jwt.expiresIn,
   });
 };
@@ -17,7 +17,7 @@ export const generateToken = (
  * Verify JWT token
  */
 export const verifyToken = (token: string): IJwtPayload => {
-  return jwt.verify(token, config.jwt.secret) as IJwtPayload;
+  return jwt.verify(token, config.jwt.secret as string) as IJwtPayload;
 };
 
 /**

@@ -6,6 +6,13 @@ import config from './shared/config/env';
 import logger from './shared/utils/logger.util';
 import { globalErrorHandler } from './shared/middlewares/globalErrorHandler';
 
+// Import routes
+import authRoutes from './modules/auth/auth.route';
+import orderRoutes from './modules/order/order.route';
+import paymentRoutes from './modules/payment/payment.route';
+import chatbotRoutes from './modules/chatbot/chatbot.route';
+import adminRoutes from './modules/admin/admin.route';
+
 const app: Application = express();
 
 app.set('trust proxy', 1);
@@ -50,6 +57,12 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404
 app.use('*', (req, res) => {

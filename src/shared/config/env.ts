@@ -11,8 +11,8 @@ interface Config {
     url: string;
   };
   jwt: {
-    secret: string;
-    expiresIn: string;
+    secret: any;
+    expiresIn: any;
   };
   stripe: {
     secretKey: string;
@@ -35,7 +35,7 @@ const config: Config = {
   },
 
   jwt: {
-    secret: process.env.JWT_SECRET || 'your-secret-key',
+    secret: process.env.JWT_SECRET !,
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   },
 
