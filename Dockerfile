@@ -3,21 +3,15 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 
-# Install ALL deps (including dev)
-RUN npm install
+RUN npm ci
 
-# Copy all source code
 COPY . .
 
-# Generate Prisma Client
 RUN npx prisma generate
 
-# Build TypeScript
 RUN npm run build
-
 
 
 # 🟩 Stage 2: Production Image
@@ -25,12 +19,19 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy ONLY required files from builder
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+
+RUN npm ci --only=production
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 5000
 
-CMD ["node", "dist/app.js"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+ENTRYPOINT ["docker-entrypoint.sh"]

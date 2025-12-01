@@ -309,42 +309,47 @@ socket.on('disconnect', () => {
 });
 ```
 
-## 🐳 Docker Deployment
+🐳 Docker Deployment Guide
+🔧 Build & Run Locally
+# Build Docker image
+docker build -t orderx-app .
 
-### Build and Run
+# Run container with environment variables
+docker run -p 5000:5000 --env-file .env orderx-app
 
-```bash
-# Build image
-docker build -t order-management-system .
+📦 Using Docker Compose (Local Development)
+# Build and start all services
+docker-compose up --build
 
-# Run container
-docker run -p 5000:5000 --env-file .env order-management-system
-```
+# Start in detached mode
+docker-compose up -d --build
 
-### Using Docker Compose
-
-```bash
-# Start all services
-docker-compose up -d
-
-# View logs
+# View live logs
 docker-compose logs -f
 
-# Stop services
+# Stop and remove containers
 docker-compose down
-```
 
 ## ☁️ Cloud Deployment
 
-### Render.com
+🌐 Deploying to Render (Docker)
 
-1. Create new **Web Service**
-2. Connect GitHub repository
-3. Configure:
-   - **Build Command:** `npm install && npx prisma generate && npm run build`
-   - **Start Command:** `npm start`
-4. Add environment variables
-5. Deploy!
+Render automatically detects your Dockerfile and builds the production image.
+
+Push your project to GitHub
+
+Create a New Web Service on Render
+
+Select environment: Docker
+
+Add your environment variables (DATABASE_URL, JWT, Stripe keys, etc.)
+
+Deploy
+
+Render will run the container using:
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 
 ## 🔐 Security Features
 
