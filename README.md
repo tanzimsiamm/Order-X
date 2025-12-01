@@ -486,7 +486,7 @@ This project is licensed under the MIT License.
 
 Made with ❤️ by Tanjim Siddiki Siyam
 
-**Live Demo:** https://order-management-system-3eai.onrender.com
+**Live Demo:** https://order-x.onrender.com/health
 
 **GitHub:** https://github.com/tanzimsiamm/Order-X
 

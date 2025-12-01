@@ -4,7 +4,7 @@ import config from './shared/config/env';
 import logger from './shared/utils/logger.util';
 import { initializeSocket } from './shared/socket/socket';
 
-const PORT = config.port || 3000;
+const PORT = config.port
 
 async function main() {
   const httpServer = createServer(app);
